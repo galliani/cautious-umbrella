@@ -14,10 +14,8 @@ File.foreach(filename) do |line|
   given_command = full_inputs.first
   inputs = full_inputs.drop(1)
 
-  if given_command != 'DEFINE' && line_index.zero?
-    puts 'Operation terminated early, please define hiring stages first'
-    break 
-  end
+  # If the first command in input is not a DEFINE, then terminate the execution
+  break unless ProcessCommand.validate_presence_of_defined_stages(given_command, line_index)
 
   ProcessCommand.execute(given_command, inputs, output)
 

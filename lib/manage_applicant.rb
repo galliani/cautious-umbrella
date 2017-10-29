@@ -1,4 +1,3 @@
-require 'byebug'
 module ManageApplicant
   # Setting up variables and constants
   HIRED_DECISION_BIN = 1

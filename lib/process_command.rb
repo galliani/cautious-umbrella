@@ -3,6 +3,15 @@ module ProcessCommand
   WHITELISTED_COMMANDS = ['DEFINE', 'CREATE', 'ADVANCE', 'DECIDE', 'STATS']
   @@defined_stages = {}
 
+  def self.validate_presence_of_defined_stages(given_command, line_index)
+    if line_index.zero? && given_command != 'DEFINE' 
+      puts 'Operation terminated early, please define hiring stages first'
+      return false
+    end
+
+    true
+  end
+
   def self.execute(given_command, inputs, output)
     if WHITELISTED_COMMANDS.include?(given_command)
 
