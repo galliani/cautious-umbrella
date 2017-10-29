@@ -4,7 +4,9 @@ module ManageApplicant
   @@decision_counter = { hired: 0, rejected: 0 }
   @@applicants = {}
 
-  def self.register(email, first_stage)
+  def self.register(inputs, first_stage)
+    email = inputs.first
+    
     if @@applicants[email].nil?
       @@applicants[email] = first_stage
       
