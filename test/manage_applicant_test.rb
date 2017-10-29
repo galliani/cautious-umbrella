@@ -1,3 +1,4 @@
+# type: ruby test/manage_applicant_test.rb to run it
 require 'minitest/autorun'
 require_relative '../lib/manage_applicant.rb' 
 
