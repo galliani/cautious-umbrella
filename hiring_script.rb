@@ -1,3 +1,8 @@
+# To run the script, either type:
+# ruby hiring_script.rb [any_other_input.txt]
+# or just type: ruby hiring_script.rb
+# as it will default to input.txt
+
 require_relative 'lib/process_command'
 require_relative 'lib/manage_applicant'
 
