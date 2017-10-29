@@ -6,6 +6,7 @@ class ManageApplicantTest < Minitest::Test
   def setup
     @defined_stages = { 'ManualReview' => 0, 'BackgroundCheck' => 1, 'DocumentSigning' => 2 }
     @first_stage = @defined_stages.keys.first
+    @last_stage = @defined_stages.keys.last
   end
 
   def test_registering_new_applicant
@@ -41,16 +42,24 @@ class ManageApplicantTest < Minitest::Test
     assert_equal 'Already in ' + advance_to, second_advance_result
   end
 
+  def test_advancing_applicant_that_is_not_registered
+    given_command = 'ADVANCE'
+    advance_to = @defined_stages.keys.last
+    inputs = ['unknown@lorem.com', advance_to]
+
+    advance_result = ManageApplicant.advance_stage(inputs, @defined_stages, given_command)
+    assert_equal 'The given applicant is not registered', advance_result
+  end
+
   def test_deciding_hired_application
     email = 'galih0muhammad@gmail.com'
     given_command = 'DECIDE'
-    last_stage = @defined_stages.keys.last
-    advance_inputs = [email, last_stage]
+    advance_inputs = [email, @last_stage]
     decide_inputs = [email, 1]
 
     ManageApplicant.register([email], @first_stage)
     ManageApplicant.advance_stage(advance_inputs, @defined_stages, given_command)
-    result = ManageApplicant.make_decision(decide_inputs, last_stage)
+    result = ManageApplicant.make_decision(decide_inputs, @last_stage)
 
     assert_equal "Hired #{email}", result
 
@@ -62,28 +71,34 @@ class ManageApplicantTest < Minitest::Test
   def test_deciding_rejected_application
     email = 'not_galih@gmail.com'
     given_command = 'DECIDE'
-    last_stage = @defined_stages.keys.last
-    advance_inputs = [email, last_stage]
+    advance_inputs = [email, @last_stage]
     decide_inputs = [email, 0]
 
     ManageApplicant.register([email], @first_stage)
     ManageApplicant.advance_stage(advance_inputs, @defined_stages, given_command)
-    result = ManageApplicant.make_decision(decide_inputs, last_stage)
+    result = ManageApplicant.make_decision(decide_inputs, @last_stage)
 
     assert_equal "Rejected #{email}", result
   end
 
   def test_deciding_failed_to_decide_application
     email = 'somebody@gmail.com'
-    given_command = 'DECIDE'
-    last_stage = @defined_stages.keys.last
-    advance_inputs = [email, last_stage]
+    advance_inputs = [email, @last_stage]
     decide_inputs = [email]
 
     ManageApplicant.register([email], @first_stage)
-    result = ManageApplicant.make_decision(decide_inputs, last_stage)
+    result = ManageApplicant.make_decision(decide_inputs, @last_stage)
 
     assert_equal "Failed to decide for #{email}", result
+  end
+
+  def test_deciding_unregistered_applicant
+    email = 'unknown@gmail.com'
+    decide_inputs = [email]
+
+    result = ManageApplicant.make_decision(decide_inputs, @last_stage)
+
+    assert_equal 'The given applicant is not registered', result
   end
 
   def test_gathering_stats

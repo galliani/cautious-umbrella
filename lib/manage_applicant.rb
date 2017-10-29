@@ -6,7 +6,8 @@ module ManageApplicant
 
   def self.register(inputs, first_stage)
     email = inputs.first
-    
+    return nil if email.nil?
+
     if @@applicants[email].nil?
       @@applicants[email] = first_stage
       
@@ -21,6 +22,8 @@ module ManageApplicant
     input_stage = inputs.size >= 2 ? inputs.last : nil 
 
     current_stage = @@applicants[email]
+    return 'The given applicant is not registered' if current_stage.nil?
+
     if current_stage == 1 || current_stage == 0
       return "The application of #{email} has been decided already"
     end
@@ -52,6 +55,9 @@ module ManageApplicant
 
   def self.make_decision(inputs, last_stage)
     email = inputs.first
+    current_stage = @@applicants[email]
+    return 'The given applicant is not registered' if current_stage.nil?
+
     decision_input = inputs.size >= 2 ? inputs.last.to_i : nil
     return "Failed to decide for #{email}" if decision_input.nil?
 
